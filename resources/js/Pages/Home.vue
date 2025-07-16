@@ -1,0 +1,39 @@
+<script setup>
+import { Head } from '@inertiajs/vue3';
+
+import NavBar from '@/Components/NavBar.vue';
+import HeroSection from '@/Components/HeroSection.vue';
+import Footer from '@/Components/Footer.vue';
+import BackgroundWrapper from '@/Components/BackgroundWrapper.vue';
+
+defineProps({
+    canLogin: Boolean,
+    canRegister: Boolean,
+    laravelVersion: String,
+    phpVersion: String,
+});
+</script>
+
+<template>
+    <Head title="Home" />
+    <BackgroundWrapper>        <!-- Navbar -->
+        <NavBar
+            :can-login="canLogin"
+            :can-register="canRegister"
+        />
+
+        <!-- Hero Section -->
+        <HeroSection
+            :can-login="canLogin"
+            :can-register="canRegister"
+        />
+
+        <!-- You can add FeatureCards here if you want to showcase features -->
+
+        <!-- Footer -->
+        <Footer
+            :laravel-version="laravelVersion"
+            :php-version="phpVersion"
+        />
+    </BackgroundWrapper>
+</template>
