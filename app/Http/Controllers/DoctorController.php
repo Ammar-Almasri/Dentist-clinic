@@ -44,15 +44,10 @@ class DoctorController extends Controller
         ]);
     }
 
-    public function update(Request $request, Doctor $doctor)
+    public function update(DoctorRequest $request, Doctor $doctor)
     {
-        $doctor->update($request->only([
-            'name',
-            'user_id',
-            'phone',
-            'speciality',
-        ]));
-
+        $doctor->update($request->validated());
+        
         return redirect()->route('doctors.index')->with('success', 'Doctor updated.');
     }
 

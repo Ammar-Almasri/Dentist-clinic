@@ -71,16 +71,7 @@ const submit = () => {
                     </div>
 
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <InputLabel for="password" value="Password" class="text-gray-700 dark:text-gray-300" />
-                            <Link
-                                v-if="canResetPassword"
-                                :href="route('password.request')"
-                                class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                            >
-                                Forgot password?
-                            </Link>
-                        </div>
+                        <InputLabel for="password" value="Password" class="text-gray-700 dark:text-gray-300" />
                         <TextInput
                             id="password"
                             v-model="form.password"
@@ -91,6 +82,17 @@ const submit = () => {
                             placeholder="Enter your password"
                         />
                         <InputError class="mt-2 text-sm" :message="form.errors.password" />
+                    </div>
+
+                    <div class="flex justify-between items-center mb-1">
+                        <div></div>
+                        <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                        Forgot password?
+                        </Link>
                     </div>
 
                     <div class="flex items-center">

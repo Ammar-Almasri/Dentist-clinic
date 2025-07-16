@@ -149,7 +149,7 @@ const filteredDoctors = computed(() => {
                             <!-- Doctor Info -->
                             <div class="text-center">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">{{ doctor.name }}</h3>
-                                <p class="text-blue-600 dark:text-blue-400 font-medium mb-2">{{ doctor.specialty || 'General Practitioner' }}</p>
+                                <p class="text-blue-600 dark:text-blue-400 font-medium mb-2">{{ doctor.speciality || 'General Practitioner' }}</p>
 
                                 <div class="flex items-center justify-center text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
