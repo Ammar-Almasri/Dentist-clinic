@@ -16,12 +16,8 @@ defineProps({
 
 <template>
     <Head title="Home" />
-    <BackgroundWrapper>        <!-- Navbar -->
-        <NavBar
-            :can-login="canLogin"
-            :can-register="canRegister"
-        />
-
+    <BackgroundWrapper>
+        
         <!-- Hero Section -->
         <HeroSection
             :can-login="canLogin"
