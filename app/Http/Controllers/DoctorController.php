@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DoctorRequest;
 use App\Models\Doctor;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Inertia\Inertia;
 
 class DoctorController extends Controller
 {
+    public function __construct()
+    {
+        // This connects your resource methods to DoctorPolicy automatically
+        $this->authorizeResource(Doctor::class, 'doctor');
+    }
+
     public function index()
     {
         $doctors = Doctor::all();
@@ -47,7 +53,7 @@ class DoctorController extends Controller
     public function update(DoctorRequest $request, Doctor $doctor)
     {
         $doctor->update($request->validated());
-        
+
         return redirect()->route('doctors.index')->with('success', 'Doctor updated.');
     }
 
