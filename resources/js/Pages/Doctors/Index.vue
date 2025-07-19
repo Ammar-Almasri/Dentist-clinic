@@ -52,7 +52,7 @@ const filteredDoctors = computed(() => {
 });
 </script>
 
-<template>
+<template >
     <Head title="Doctors" />
 
     <AuthenticatedLayout>
@@ -62,8 +62,14 @@ const filteredDoctors = computed(() => {
                     <h2 class="text-3xl font-bold text-gray-900">Our Medical Team</h2>
                     <p class="mt-2 text-gray-600">Find and connect with our specialist doctors</p>
                 </div>
-                <div v-if="isAdmin">
-                    <Link :href="route('doctors.create')">
+                <div class="flex items-center gap-4">
+                    <Link :href="route('dashboard')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Back to Dashboard
+                    </Link>
+                    <Link v-if="isAdmin" :href="route('doctors.create')">
                         <PrimaryButton class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 shadow-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
@@ -165,7 +171,7 @@ const filteredDoctors = computed(() => {
                             <!-- Doctor Info -->
                             <div class="text-center">
                                 <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors">{{ doctor.name }}</h3>
-                                <p class="text-blue-600 font-medium text-sm mb-3">{{ doctor.specialty || 'General Practitioner' }}</p>
+                                <p class="text-blue-600 font-medium text-sm mb-3">{{ doctor.speciality || 'General Practitioner' }}</p>
 
                                 <div class="flex items-center justify-center text-xs text-gray-600 mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

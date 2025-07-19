@@ -1,10 +1,12 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AuthenticatedLayout>
+        <Head title="Dashboard" /> <!-- This sets the page title -->
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Clinic Dashboard
@@ -73,5 +75,5 @@ import { Link } from '@inertiajs/vue3';
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AuthenticatedLayout>
 </template>

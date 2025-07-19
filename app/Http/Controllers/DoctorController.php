@@ -48,6 +48,12 @@ class DoctorController extends Controller
 
     public function show(Doctor $doctor)
     {
+        $photoPath = "photos/{$doctor->name}.jpg";
+
+        $doctor->photo_url = file_exists(public_path($photoPath))
+            ? asset($photoPath)
+            : null;
+
         return Inertia::render('Doctors/Show', [
             'doctor' => $doctor,
         ]);
