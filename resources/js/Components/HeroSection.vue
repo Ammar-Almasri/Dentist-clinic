@@ -8,10 +8,10 @@ defineProps({
 </script>
 
 <template>
-  <section class="min-h-screen bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 flex flex-col justify-center items-center text-center px-4 overflow-hidden relative">
+  <section class="min-h-screen bg-gradient-to-br from-white to-blue-50 flex flex-col justify-center items-center text-center px-4 overflow-hidden relative">
     <!-- Decorative elements -->
-    <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-100 dark:bg-blue-900 rounded-full opacity-20 blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-80 h-80 bg-teal-100 dark:bg-teal-900 rounded-full opacity-20 blur-3xl"></div>
+    <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-teal-100 rounded-full opacity-20 blur-3xl"></div>
 
     <!-- Animated tooth icon -->
     <div class="absolute top-1/4 left-1/4 w-16 h-16 opacity-10 animate-float">
@@ -23,12 +23,12 @@ defineProps({
     <!-- Main content -->
     <div class="relative z-10 max-w-4xl mx-auto">
       <!-- Animated headline -->
-      <h2 class="text-5xl md:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white mb-6 animate-fade-in">
+      <h2 class="text-5xl md:text-7xl font-extrabold leading-tight text-gray-900 mb-6 animate-fade-in">
         Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">Smile</span> Matters
       </h2>
 
       <!-- Subheading with animated typing effect -->
-      <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mb-10 leading-relaxed animate-fade-in [animation-delay:200ms]">
+      <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mb-10 leading-relaxed animate-fade-in [animation-delay:200ms]">
         Experience premium dental care with our state-of-the-art clinic management system
       </p>
 
@@ -48,7 +48,7 @@ defineProps({
         <Link
           v-if="canRegister"
           :href="route('register')"
-          class="px-8 py-4 bg-white dark:bg-gray-800 border-2 border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+          class="px-8 py-4 bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
@@ -59,34 +59,34 @@ defineProps({
 
       <!-- Features grid -->
       <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mt-16 animate-fade-in [animation-delay:600ms]">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100 dark:border-gray-700">
-          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-800 dark:text-white">Easy Scheduling</h3>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Book appointments in seconds</p>
+          <h3 class="font-bold text-gray-800">Easy Scheduling</h3>
+          <p class="text-gray-600 text-sm mt-1">Book appointments in seconds</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100 dark:border-gray-700">
-          <div class="w-12 h-12 bg-teal-100 dark:bg-teal-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100">
+          <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-800 dark:text-white">Patient Records</h3>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Digital health history</p>
+          <h3 class="font-bold text-gray-800">Patient Records</h3>
+          <p class="text-gray-600 text-sm mt-1">Digital health history</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100 dark:border-gray-700">
-          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-800 dark:text-white">Secure Data</h3>
-          <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">HIPAA compliant</p>
+          <h3 class="font-bold text-gray-800">Secure Data</h3>
+          <p class="text-gray-600 text-sm mt-1">HIPAA compliant</p>
         </div>
       </div>
     </div>

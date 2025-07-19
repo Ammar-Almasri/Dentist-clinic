@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DoctorRequest;
 use App\Models\Doctor;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DoctorController extends Controller
@@ -17,10 +18,19 @@ class DoctorController extends Controller
 
     public function index()
     {
-        $doctors = Doctor::all();
+        $doctors = Doctor::all()->map(function ($doctor) {
+            $photoPath = "photos/{$doctor->name}.jpg";
+
+            $doctor->photo_url = file_exists(public_path($photoPath))
+                ? asset($photoPath)
+                : null;
+
+            return $doctor;
+        });
 
         return Inertia::render('Doctors/Index', [
             'doctors' => $doctors,
+            'auth' => ['user' => Auth::user()], // Add this line
         ]);
     }
 
