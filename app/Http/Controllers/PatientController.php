@@ -30,10 +30,21 @@ class PatientController extends Controller
 
     public function store(PatientRequest $request)
     {
-        Patient::create($request->validated());
+        $data = $request->validated();
+
+        // Check if there's a user with the same phone
+        $user = \App\Models\User::where('phone', $data['phone'])->first();
+
+        // If found, assign the user_id
+        if ($user) {
+            $data['user_id'] = $user->id;
+        }
+
+        Patient::create($data);
 
         return redirect()->route('patients.index')->with('success', 'Patient created.');
     }
+
 
     public function show(Patient $patient)
     {
