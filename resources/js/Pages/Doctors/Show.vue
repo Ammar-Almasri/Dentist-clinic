@@ -6,6 +6,8 @@ import { ref, computed } from 'vue';
 
 const props = defineProps({
     doctor: Object,
+    auth: Object, // Add this line to receive the auth prop
+
 });
 
 // Check if user is admin
@@ -27,14 +29,6 @@ const isAdmin = computed(() => {
                         <h2 class="text-2xl font-bold text-gray-900">Doctor Profile</h2>
                         <p class="text-gray-600">View detailed information</p>
                     </div>
-                </div>
-                <div class="flex items-center space-x-3" v-if="isAdmin">
-                    <Link
-                        :href="route('doctors.edit', doctor.id)"
-                        class="px-4 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg font-medium transition-colors"
-                    >
-                        Edit Profile
-                    </Link>
                 </div>
             </div>
         </template>
@@ -143,6 +137,7 @@ const isAdmin = computed(() => {
 
                             <div class="flex items-center space-x-4">
                                 <Link
+                                    v-if="isAdmin"
                                     :href="route('doctors.edit', doctor.id)"
                                     class="flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md"
                                 >
