@@ -11,6 +11,7 @@ defineProps({
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    services: Array,
 });
 </script>
 
@@ -30,6 +31,7 @@ defineProps({
         <Footer
             :laravel-version="laravelVersion"
             :php-version="phpVersion"
+            :services="services"
         />
     </BackgroundWrapper>
 </template>

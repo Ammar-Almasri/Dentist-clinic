@@ -1,3 +1,9 @@
+<script setup>
+defineProps({
+  services: Array
+});
+</script>
+
 <template>
   <footer class="relative bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 pt-16 pb-8 overflow-hidden">
     <!-- Decorative waves -->
@@ -14,9 +20,9 @@
 
     <!-- Main footer content -->
     <div class="container mx-auto px-6 relative z-10">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-        <!-- Clinic info -->
-        <div class="text-left">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+        <!-- Clinic info (wider column) -->
+        <div class="text-left md:col-span-1">
           <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -49,23 +55,11 @@
         <div class="text-left">
           <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Quick Links</h3>
           <ul class="space-y-2">
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Home</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">About Us</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Services</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Dentists</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Contact</a></li>
-          </ul>
-        </div>
-
-        <!-- Services -->
-        <div class="text-left">
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Our Services</h3>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Teeth Cleaning</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Dental Implants</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Cosmetic Dentistry</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Orthodontics</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Emergency Care</a></li>
+            <li><Link href="/" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Home</Link></li>
+            <li><Link href="/about" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">About Us</Link></li>
+            <li><Link href="/services" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Our Services</Link></li>
+            <li><Link href="/dentists" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Our Dentists</Link></li>
+            <li><Link href="/contact" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition">Contact Us</Link></li>
           </ul>
         </div>
 
@@ -109,9 +103,9 @@
             &copy; {{ new Date().getFullYear() }} DentistClinic. All rights reserved.
           </p>
           <div class="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Privacy Policy</a>
-            <a href="#" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Terms of Service</a>
-            <a href="#" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Sitemap</a>
+            <Link href="/privacy" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Privacy Policy</Link>
+            <Link href="/terms" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Terms of Service</Link>
+            <Link href="/sitemap" class="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 text-sm transition">Sitemap</Link>
           </div>
         </div>
       </div>

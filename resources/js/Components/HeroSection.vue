@@ -55,6 +55,21 @@ defineProps({
           </svg>
           Register Now
         </Link>
+
+        <!-- Services button -->
+        <Link
+          :href="route('services.index')"
+          class="px-8 py-4 bg-gradient-to-r from-teal-600 to-blue-500 hover:from-teal-700 hover:to-blue-600 text-white rounded-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12l2 2 4-4"/>
+            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+            <path d="M15 21c0-1 1-3 3-3s3 2 3 3-1 3-3 3-3-2-3-3"/>
+            <path d="M9 21c0-1-1-3-3-3s-3 2-3 3 1 3 3 3 3-2 3-3"/>
+          </svg>
+          Our Services
+        </Link>
       </div>
 
       <!-- Features grid -->
@@ -80,13 +95,13 @@ defineProps({
         </div>
 
         <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-gray-100">
-          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-800">Secure Data</h3>
-          <p class="text-gray-600 text-sm mt-1">HIPAA compliant</p>
+          <h3 class="font-bold text-gray-800">Doctor Records</h3>
+          <p class="text-gray-600 text-sm mt-1">Professional medical staff</p>
         </div>
       </div>
     </div>
