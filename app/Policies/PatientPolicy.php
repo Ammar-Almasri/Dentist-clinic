@@ -10,7 +10,7 @@ class PatientPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return true;
     }
 
     public function view(User $user, Patient $patient): bool
@@ -20,17 +20,17 @@ class PatientPolicy
 
     public function create(User $user): bool
     {
-        return false; // creation is handled via userStore, no restriction here
+        return $user->role_id === Roles::ADMIN;
     }
 
     public function update(User $user, Patient $patient): bool
     {
-        return $user->id === $patient->user_id;
+        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id;
     }
 
     public function delete(User $user, Patient $patient): bool
     {
-        return $user->id === $patient->user_id;
+        return $user->role_id === Roles::ADMIN;
     }
 
     public function restore(User $user, Patient $patient): bool

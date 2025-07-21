@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Roles;
 use App\Http\Requests\PatientRequest;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,11 @@ class PatientController extends Controller
 
     public function index()
     {
-        $patients = Patient::all();
+        $user = Auth::user();
+
+        $patients = $user->role_id === Roles::ADMIN
+            ? Patient::all()
+            : Patient::where('user_id', $user->id)->get();
 
         return Inertia::render('Patients/Index', [
             'patients' => $patients,
@@ -32,19 +37,21 @@ class PatientController extends Controller
     {
         $data = $request->validated();
 
-        // Check if there's a user with the same phone
-        $user = \App\Models\User::where('phone', $data['phone'])->first();
-
-        // If found, assign the user_id
-        if ($user) {
-            $data['user_id'] = $user->id;
+        if (Auth::user()->role_id === Roles::ADMIN) {
+            // Admin: check if there's a user with same phone and assign user_id
+            $user = \App\Models\User::where('phone', $data['phone'])->first();
+            if ($user) {
+                $data['user_id'] = $user->id;
+            }
+        } else {
+            // Non-admin: always assign current user's ID
+            $data['user_id'] = Auth::id();
         }
 
         Patient::create($data);
 
         return redirect()->route('patients.index')->with('success', 'Patient created.');
     }
-
 
     public function show(Patient $patient)
     {
@@ -73,55 +80,4 @@ class PatientController extends Controller
 
         return redirect()->route('patients.index')->with('success', 'Patient deleted.');
     }
-    public function userIndex()
-    {
-        $patients = Patient::where('user_id', Auth::id())->get();
-
-        return Inertia::render('Patients/Index', [
-            'patients' => $patients,
-        ]);
-    }
-
-    public function userCreate()
-    {
-        return Inertia::render('Patients/Create');
-    }
-
-    public function userStore(PatientRequest $request)
-    {
-        Patient::create([
-            ...$request->validated(),
-            'user_id' => Auth::id(),
-        ]);
-
-        return redirect()->route('patients.userIndex')->with('success', 'Patient created.');
-    }
-
-    public function userEdit(Patient $patient)
-    {
-        $this->authorize('view', $patient); // reuse view policy to check ownership
-
-        return Inertia::render('Patients/Edit', [
-            'patient' => $patient,
-        ]);
-    }
-
-    public function userUpdate(PatientRequest $request, Patient $patient)
-    {
-        $this->authorize('update', $patient); // you can change this to update if you allow it later
-
-        $patient->update($request->validated());
-
-        return redirect()->route('patients.userIndex')->with('success', 'Patient updated.');
-    }
-
-    public function userDestroy(Patient $patient)
-    {
-        $this->authorize('delete', $patient); // same, use policy
-
-        $patient->delete();
-
-        return redirect()->route('patients.userIndex')->with('success', 'Patient deleted.');
-    }
-
 }
