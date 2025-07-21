@@ -1,10 +1,20 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { Roles } from '@/Constants/Roles';
+
+const props = defineProps({
+    auth: Object,
+});
+
+const isAdmin = computed(() => {
+    return props.auth?.user?.role_id === Roles.ADMIN;
+});
 
 const form = useForm({
     name: '',
@@ -64,8 +74,8 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.birth_date" />
                         </div>
 
-                        <!-- Phone -->
-                        <div class="group">
+                        <!-- Phone (Admin only) -->
+                        <div v-if="isAdmin" class="group">
                             <InputLabel for="phone" value="Phone *" class="mb-1" />
                             <TextInput
                                 id="phone"

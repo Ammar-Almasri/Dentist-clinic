@@ -46,6 +46,7 @@ class PatientController extends Controller
         } else {
             // Non-admin: always assign current user's ID
             $data['user_id'] = Auth::id();
+            $data['phone'] = Auth::user()->phone; // Use current user's phone
         }
 
         Patient::create($data);

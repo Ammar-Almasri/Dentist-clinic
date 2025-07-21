@@ -20,7 +20,7 @@ class PatientPolicy
 
     public function create(User $user): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return true;
     }
 
     public function update(User $user, Patient $patient): bool
