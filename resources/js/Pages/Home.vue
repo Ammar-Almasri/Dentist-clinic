@@ -17,7 +17,7 @@ defineProps({
 <template>
     <Head title="Home" />
     <BackgroundWrapper>
-        
+
         <!-- Hero Section -->
         <HeroSection
             :can-login="canLogin"
