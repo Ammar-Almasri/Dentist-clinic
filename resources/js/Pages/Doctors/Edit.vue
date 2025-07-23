@@ -12,6 +12,7 @@ const form = useForm({
     name: props.doctor.name || '',
     speciality: props.doctor.speciality || '',
     phone: props.doctor.phone || '',
+    email: props.doctor.email || '',
     _method: 'PUT'
 });
 
@@ -105,6 +106,17 @@ const submit = () => {
                                     placeholder="0790000000"
                                 />
                                 <div v-if="form.errors.phone" class="text-red-600 text-sm mt-2">{{ form.errors.phone }}</div>
+                            </div>
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input
+                                    v-model="form.email"
+                                    type="email"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    placeholder="dr.john@example.com"
+                                />
+                                <div v-if="form.errors.email" class="text-red-600 text-sm mt-2">{{ form.errors.email }}</div>
                             </div>
                         </div>
                     </div>

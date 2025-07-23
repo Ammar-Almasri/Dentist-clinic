@@ -10,6 +10,7 @@ const form = useForm({
     name: '',
     speciality: '',
     phone: '',
+    email: '',
 });
 
 const submit = () => {
@@ -78,6 +79,21 @@ const submit = () => {
                             />
                             <InputError class="mt-2" :message="form.errors.phone" />
                         </div>
+
+                        <!-- Email -->
+                        <div class="group">
+                            <InputLabel for="email" value="Email *" class="mb-1" />
+                            <TextInput
+                                id="email"
+                                v-model="form.email"
+                                type="email"
+                                class="w-full"
+                                required
+                                placeholder="dr.john@example.com"
+                            />
+                            <InputError class="mt-2" :message="form.errors.email" />
+                        </div>
+
 
                         <!-- Form Actions -->
                         <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
