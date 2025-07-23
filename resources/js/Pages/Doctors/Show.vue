@@ -122,6 +122,31 @@ const isAdmin = computed(() => {
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="px-6 py-8 border-t border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            Services Offered
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div v-for="service in doctor.services" :key="service.id" class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-blue-200 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-shrink-0 bg-blue-100 p-2 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">{{ service.name }}</h4>
+                                        <p v-if="service.description" class="text-sm text-gray-500 mt-1">{{ service.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Quick Actions -->
                     <div class="bg-gray-50 px-6 py-5 border-t border-gray-200">

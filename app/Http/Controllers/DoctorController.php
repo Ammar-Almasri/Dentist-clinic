@@ -48,6 +48,8 @@ class DoctorController extends Controller
 
     public function show(Doctor $doctor)
     {
+        $doctor->load('services'); // load services relation
+
         $photoPath = "photos/{$doctor->name}.jpg";
 
         $doctor->photo_url = file_exists(public_path($photoPath))
@@ -58,6 +60,7 @@ class DoctorController extends Controller
             'doctor' => $doctor,
         ]);
     }
+
 
     public function edit(Doctor $doctor)
     {
