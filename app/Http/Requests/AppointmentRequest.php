@@ -18,7 +18,6 @@ class AppointmentRequest extends FormRequest
             'doctor_id' => 'required|exists:doctors,id',
             'service_id' => 'nullable|exists:services,id',
             'appointment_date' => 'required|date|after_or_equal:today',
-            'status' => 'in:0,1',
         ];
     }
 }

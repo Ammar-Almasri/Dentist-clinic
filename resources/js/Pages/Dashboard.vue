@@ -22,7 +22,7 @@ import { Link } from '@inertiajs/vue3';
                             <p class="text-lg text-gray-600">Manage your healthcare operations efficiently</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                             <!-- Patients Card -->
                             <Link
                                 :href="route('patients.index')"
@@ -62,6 +62,28 @@ import { Link } from '@inertiajs/vue3';
                                     <div class="mt-6 flex justify-center">
                                         <span class="px-4 py-2 bg-white text-teal-600 rounded-lg text-sm font-medium shadow-sm group-hover:bg-teal-50 transition-colors">
                                             Go to Doctors
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+
+                            <!-- Appointments Card -->
+                            <Link
+                                :href="route('appointments.index')"
+                                class="group relative bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-purple-100 hover:border-purple-200 overflow-hidden"
+                            >
+                                <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-200 rounded-full opacity-20"></div>
+                                <div class="relative z-10">
+                                    <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-center text-gray-800 mb-2">Appointments</h3>
+                                    <p class="text-gray-600 text-center text-sm">View and manage all clinic appointments</p>
+                                    <div class="mt-6 flex justify-center">
+                                        <span class="px-4 py-2 bg-white text-purple-600 rounded-lg text-sm font-medium shadow-sm group-hover:bg-purple-50 transition-colors">
+                                            Go to Appointments
                                         </span>
                                     </div>
                                 </div>
