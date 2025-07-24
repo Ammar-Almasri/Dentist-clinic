@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ServiceController;
@@ -30,3 +31,4 @@ Route::middleware([
 Route::resource('doctors', DoctorController::class);
 Route::resource('patients', PatientController::class);
 Route::resource('services', ServiceController::class);
+Route::resource('appointments', AppointmentController::class);

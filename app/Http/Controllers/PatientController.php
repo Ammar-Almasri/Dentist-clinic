@@ -39,7 +39,7 @@ class PatientController extends Controller
 
         if (Auth::user()->role_id === Roles::ADMIN) {
             // Admin: check if there's a user with same phone and assign user_id
-            $user = \App\Models\User::where('phone', $data['phone'])->first();
+            $user = User::where('phone', $data['phone'])->first();
             if ($user) {
                 $data['user_id'] = $user->id;
             }
