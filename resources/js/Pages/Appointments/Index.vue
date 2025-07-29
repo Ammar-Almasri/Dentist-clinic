@@ -1,8 +1,8 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import {
     PencilSquareIcon,
     TrashIcon,
@@ -16,21 +16,36 @@ import {
     ArrowDownIcon,
     ChevronUpDownIcon
 } from '@heroicons/vue/24/outline';
+import { Status } from '@/Constants/Status';
+
+const confirmDelete = (id) => {
+    if (confirm('Are you sure you want to delete this appointment? This action cannot be undone.')) {
+        router.delete(route('appointments.destroy', id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Optional: Show a success message
+            },
+            onError: () => {
+                // Optional: Show an error message
+            }
+        });
+    }
+};
 
 const props = defineProps({
     appointments: Object,
+    doctors: Array, // Add doctors prop
+    filters: Object
 });
 
 const statuses = {
-    0: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
-    1: { label: 'Confirmed', color: 'bg-green-100 text-green-800' },
-    2: { label: 'Cancelled', color: 'bg-red-100 text-red-800' },
-    3: { label: 'Completed', color: 'bg-blue-100 text-blue-800' },
+    [Status.PENDING]: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
+    [Status.CONFIRMED]: { label: 'Confirmed', color: 'bg-green-100 text-green-800' },
 };
 
 // Sorting
-const sortField = ref('appointment_date');
-const sortDirection = ref('desc');
+const sortField = ref(props.filters?.sort || 'appointment_date');
+const sortDirection = ref(props.filters?.direction || 'desc');
 
 const sort = (field) => {
     if (sortField.value === field) {
@@ -44,11 +59,10 @@ const sort = (field) => {
 
 // Filtering
 const filters = ref({
-    status: '',
-    date_from: '',
-    date_to: '',
-    doctor_id: '',
-    patient_id: '',
+    status: props.filters?.status || '',
+    date_from: props.filters?.date_from || '',
+    date_to: props.filters?.date_to || '',
+    doctor_id: props.filters?.doctor_id || '',
 });
 
 const fetchAppointments = () => {
@@ -57,6 +71,13 @@ const fetchAppointments = () => {
         direction: sortDirection.value,
         ...filters.value,
     };
+
+    // Remove empty filters
+    Object.keys(params).forEach(key => {
+        if (params[key] === '') {
+            delete params[key];
+        }
+    });
 
     router.get(route('appointments.index'), params, {
         preserveState: true,
@@ -70,8 +91,9 @@ const resetFilters = () => {
         date_from: '',
         date_to: '',
         doctor_id: '',
-        patient_id: '',
     };
+    sortField.value = 'appointment_date';
+    sortDirection.value = 'desc';
     fetchAppointments();
 };
 
@@ -124,7 +146,7 @@ const formatDateTime = (dateTime) => {
                                 </button>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                     <select
@@ -134,6 +156,20 @@ const formatDateTime = (dateTime) => {
                                     >
                                         <option value="">All Statuses</option>
                                         <option v-for="(status, key) in statuses" :value="key">{{ status.label }}</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                                    <select
+                                        v-model="filters.doctor_id"
+                                        @change="fetchAppointments"
+                                        class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    >
+                                        <option value="">All Doctors</option>
+                                        <option v-for="doctor in doctors" :value="doctor.id">
+                                            Dr. {{ doctor.name }} ({{ doctor.speciality }})
+                                        </option>
                                     </select>
                                 </div>
 
@@ -292,7 +328,7 @@ const formatDateTime = (dateTime) => {
                                                         Dr. {{ appointment.doctor.name }}
                                                     </div>
                                                     <div class="text-sm text-gray-500">
-                                                        {{ appointment.doctor.specialization }}
+                                                        {{ appointment.doctor.speciality }}
                                                     </div>
                                                 </div>
                                             </div>

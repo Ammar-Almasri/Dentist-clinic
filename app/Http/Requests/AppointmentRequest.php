@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Constants\Status;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AppointmentRequest extends FormRequest
@@ -18,6 +19,7 @@ class AppointmentRequest extends FormRequest
             'doctor_id' => 'required|exists:doctors,id',
             'service_id' => 'nullable|exists:services,id',
             'appointment_date' => 'required|date|after_or_equal:today',
+            'status' => 'nullable|in:' . implode(',', [Status::PENDING, Status::CONFIRMED]),
         ];
     }
 }

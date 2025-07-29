@@ -19,21 +19,32 @@ class AppointmentController extends Controller
         $this->authorizeResource(Appointment::class, 'appointment');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $query = Appointment::with(['patient', 'doctor', 'service']);
+        $query = Appointment::with(['patient', 'doctor', 'service'])
+            ->filterByStatus($request->status)
+            ->filterByDate($request->date_from, $request->date_to)
+            ->filterByDoctor($request->doctor_id);
 
         if (auth()->user()->role_id !== Roles::ADMIN) {
-            // For patient role: filter appointments by patients under the user
+            // For non-admin users: filter appointments by patients under the user
             $query->whereHas('patient', function ($q) {
                 $q->where('user_id', auth()->id());
             });
         }
 
-        $appointments = $query->paginate(15);
+        // Apply sorting
+        $sortField = $request->sort ?? 'appointment_date';
+        $sortDirection = $request->direction ?? 'desc';
+
+        $appointments = $query->orderBy($sortField, $sortDirection)
+            ->paginate(15)
+            ->appends($request->query());
 
         return Inertia::render('Appointments/Index', [
             'appointments' => $appointments,
+            'doctors' => Doctor::all(),
+            'filters' => $request->only(['status', 'date_from', 'date_to', 'doctor_id', 'sort', 'direction']),
         ]);
     }
 
@@ -56,7 +67,7 @@ class AppointmentController extends Controller
         $data = $request->validated();
 
         if (auth()->user()->role_id === Roles::ADMIN) {
-            $data['status'] = Status::BOOKED;
+            $data['status'] = Status::CONFIRMED;
         } else {
             $data['status'] = Status::PENDING;
         }
@@ -77,15 +88,16 @@ class AppointmentController extends Controller
 
     public function edit(Appointment $appointment)
     {
-        $patients = auth()->user()->role_id === Roles::ADMIN ? Patient::all() : null;
-        $doctors = Doctor::all();
-        $services = Service::all();
+        // For non-admin users, only show the patient that belongs to them
+        $patients = auth()->user()->role_id === Roles::ADMIN
+            ? Patient::all()
+            : Patient::where('user_id', auth()->id())->get();
 
         return Inertia::render('Appointments/Edit', [
-            'appointment' => $appointment,
+            'appointment' => $appointment->load(['patient', 'doctor', 'service']),
             'patients' => $patients,
-            'doctors' => $doctors,
-            'services' => $services,
+            'doctors' => Doctor::all(),
+            'services' => Service::all(),
         ]);
     }
 
@@ -93,9 +105,7 @@ class AppointmentController extends Controller
     {
         $data = $request->validated();
 
-        if (auth()->user()->role_id === Roles::ADMIN) {
-            $data['status'] = Status::BOOKED;
-        } else {
+        if (auth()->user()->role_id !== Roles::ADMIN) {
             $data['status'] = Status::PENDING;
         }
 

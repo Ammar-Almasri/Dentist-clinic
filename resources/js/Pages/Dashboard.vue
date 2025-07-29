@@ -91,7 +91,7 @@ import { Link } from '@inertiajs/vue3';
                         </div>
 
                         <div class="mt-16 text-center">
-                            <p class="text-gray-500 text-sm">Need help? <a href="#" class="text-blue-500 hover:text-blue-700">Contact support</a></p>
+                            <p class="text-gray-500 text-sm">Need help? <a href="https://ammar-almasri.github.io" class="text-blue-500 hover:text-blue-700">Contact support</a></p>
                         </div>
                     </div>
                 </div>

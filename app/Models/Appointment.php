@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -55,5 +56,38 @@ class Appointment extends Model
     public function service()
     {
         return $this->belongsTo(Service::class);
+    }
+
+        /**
+     * Scope to filter appointments by status
+     */
+    public function scopeFilterByStatus(Builder $query, ?int $status): Builder
+    {
+        return $query->when($status !== null, function ($q) use ($status) {
+            $q->where('status', $status);
+        });
+    }
+
+    /**
+     * Scope to filter appointments by date range
+     */
+    public function scopeFilterByDate(Builder $query, ?string $dateFrom, ?string $dateTo): Builder
+    {
+        return $query->when($dateFrom, function ($q) use ($dateFrom) {
+            $q->where('appointment_date', '>=', $dateFrom);
+        })
+        ->when($dateTo, function ($q) use ($dateTo) {
+            $q->where('appointment_date', '<=', $dateTo);
+        });
+    }
+
+    /**
+     * Scope to filter appointments by doctor
+     */
+    public function scopeFilterByDoctor(Builder $query, ?int $doctorId): Builder
+    {
+        return $query->when($doctorId, function ($q) use ($doctorId) {
+            $q->where('doctor_id', $doctorId);
+        });
     }
 }
