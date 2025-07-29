@@ -98,6 +98,16 @@ defineProps({
 
       <!-- Copyright and bottom bar -->
       <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+        <!-- Add this below the contact info grid and above the copyright -->
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Website developed by
+            <a href="https://ammar-almasri.github.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                Ammar Almasri
+            </a>
+        </div>
         <div class="flex flex-col md:flex-row justify-between items-center">
           <p class="text-gray-600 dark:text-gray-400 text-sm">
             &copy; {{ new Date().getFullYear() }} DentistClinic. All rights reserved.

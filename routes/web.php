@@ -25,10 +25,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::resource('doctors', DoctorController::class);
+    Route::resource('patients', PatientController::class);
+    Route::resource('appointments', AppointmentController::class);
 });
 
-
-Route::resource('doctors', DoctorController::class);
-Route::resource('patients', PatientController::class);
 Route::resource('services', ServiceController::class);
-Route::resource('appointments', AppointmentController::class);
