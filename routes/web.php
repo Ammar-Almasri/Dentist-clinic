@@ -32,3 +32,4 @@ Route::middleware([
 });
 
 Route::resource('services', ServiceController::class);
+Route::get('/test-speed', fn() => 'Fast response');
