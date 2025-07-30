@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\Roles;
 use App\Http\Requests\PatientRequest;
 use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 

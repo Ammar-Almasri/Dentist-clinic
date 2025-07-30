@@ -28,12 +28,24 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'phone' => $input['phone'], // add this
-            'role_id' => Roles::PATIENT, // set role here
+            'phone' => $input['phone'],
+            'role_id' => Roles::PATIENT,
         ]);
+
+        // Check for existing patient with the same phone number
+        $patient = \App\Models\Patient::where('phone', $input['phone'])->first();
+
+        if ($patient && !$patient->user_id) {
+            $patient->user_id = $user->id;
+            $patient->save();
+        }
+
+        return $user;
+
+
     }
 }
