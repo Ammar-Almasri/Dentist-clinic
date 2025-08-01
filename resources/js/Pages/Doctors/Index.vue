@@ -6,12 +6,13 @@ import { ref, computed, watch } from 'vue';
 import { Roles } from '@/Constants/Roles';
 
 const props = defineProps({
-    doctors: Object, // Changed from Array to Object to handle pagination data
+    doctors: Object,
     auth: Object,
+    filters: Object,
 });
 
-const searchQuery = ref('');
-const selectedspeciality = ref('all');
+const searchQuery = ref(props.filters.name || '');
+const selectedspeciality = ref(props.filters.speciality || 'all');
 
 // Check if user is admin
 const isAdmin = computed(() => {
@@ -29,40 +30,35 @@ const specialties = computed(() => {
     return ['all', ...Array.from(unique).sort()];
 });
 
-// Filter doctors from current page
-const filteredDoctors = computed(() => {
-    let results = props.doctors.data;
-
-    // Filter by search query
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        results = results.filter(doctor =>
-            doctor.name.toLowerCase().includes(query) ||
-            (doctor.speciality && doctor.speciality.toLowerCase().includes(query))
-        );
-    }
-
-    // Filter by speciality
-    if (selectedspeciality.value !== 'all') {
-        results = results.filter(doctor => doctor.speciality === selectedspeciality.value);
-    }
-
-    return results;
-});
+// Watch for filter changes and update the backend request
+watch([searchQuery, selectedspeciality], () => {
+    router.get(route('doctors.index'), {
+        name: searchQuery.value,
+        speciality: selectedspeciality.value === 'all' ? null : selectedspeciality.value,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
+}, { deep: true });
 
 // Reset filters and go to first page
 const resetFilters = () => {
     searchQuery.value = '';
     selectedspeciality.value = 'all';
-    if (props.doctors.current_page !== 1) {
-        router.get(route('doctors.index'));
-    }
+    router.get(route('doctors.index'), {}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
 };
 
 // Handle pagination
 const goToPage = (url) => {
     if (url) {
-        router.get(url, {}, {
+        router.get(url, {
+            name: searchQuery.value,
+            speciality: selectedspeciality.value === 'all' ? null : selectedspeciality.value,
+        }, {
             preserveState: true,
             preserveScroll: true,
         });
@@ -71,6 +67,7 @@ const goToPage = (url) => {
 </script>
 
 <template>
+    <!-- The rest of your template remains exactly the same -->
     <Head title="Doctors" />
 
     <AuthenticatedLayout>
@@ -151,16 +148,15 @@ const goToPage = (url) => {
                     <!-- Results Count -->
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <p class="text-sm text-gray-600">
-                            Showing {{ filteredDoctors.length }} of {{ doctors.data.length }} doctors on this page
-                            ({{ doctors.total }} total doctors)
+                            Showing {{ doctors.from }} to {{ doctors.to }} of {{ doctors.total }} doctors
                         </p>
                     </div>
                 </div>
 
                 <!-- Doctors Grid -->
-                <div v-if="filteredDoctors.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                <div v-if="doctors.total > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                     <div
-                        v-for="doctor in filteredDoctors"
+                        v-for="doctor in doctors.data"
                         :key="doctor.id"
                         class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-blue-200 group"
                     >
@@ -279,7 +275,7 @@ const goToPage = (url) => {
                 </div>
 
                 <!-- Empty State -->
-                <div v-else-if="doctors.data.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
+                <div v-else-if="doctors.total === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
                     <div class="max-w-md mx-auto">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

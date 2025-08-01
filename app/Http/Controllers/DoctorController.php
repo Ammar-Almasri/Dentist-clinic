@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DoctorRequest;
 use App\Models\Doctor;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -18,11 +19,16 @@ class DoctorController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
         $perPage = 4;
 
-        $doctors = Doctor::paginate($perPage);
+        $doctors = Doctor::query()
+            ->filterByName($request->name)
+            ->filterBySpeciality($request->speciality)
+            ->filterByPhone($request->phone)
+            ->paginate($perPage)
+            ->appends($request->only(['name', 'speciality', 'phone']));
 
         $doctors->getCollection()->transform(function ($doctor) {
             $photoPath = "photos/{$doctor->name}.jpg";
@@ -37,8 +43,10 @@ class DoctorController extends Controller
         return Inertia::render('Doctors/Index', [
             'doctors' => $doctors,
             'auth' => ['user' => Auth::user()],
+            'filters' => $request->only(['name', 'speciality', 'phone']),
         ]);
     }
+
 
 
     public function create()

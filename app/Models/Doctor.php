@@ -56,6 +56,19 @@ class Doctor extends Model
         return $this->hasMany(Appointment::class);
     }
 
-    
+    public function scopeFilterByName($query, $name)
+    {
+        return $name ? $query->where('name', 'like', "%$name%") : $query;
+    }
+
+    public function scopeFilterBySpeciality($query, $speciality)
+    {
+        return $speciality ? $query->where('speciality', 'like', "%$speciality%") : $query;
+    }
+
+    public function scopeFilterByPhone($query, $phone)
+    {
+        return $phone ? $query->where('phone', 'like', "%$phone%") : $query;
+    }
 
 }
