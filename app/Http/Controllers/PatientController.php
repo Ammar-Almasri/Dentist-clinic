@@ -6,6 +6,7 @@ use App\Constants\Roles;
 use App\Http\Requests\PatientRequest;
 use App\Models\Patient;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -16,16 +17,23 @@ class PatientController extends Controller
         $this->authorizeResource(Patient::class, 'patient');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $patients = $user->role_id === Roles::ADMIN
-            ? Patient::all()
-            : Patient::where('user_id', $user->id)->get();
+        $query = Patient::query()
+            ->filterByName($request->name)
+            ->filterByPhone($request->phone);
+
+        if ($user->role_id !== Roles::ADMIN) {
+            $query->where('user_id', $user->id);
+        }
+
+        $patients = $query->paginate(4)->withQueryString();
 
         return Inertia::render('Patients/Index', [
             'patients' => $patients,
+            'filters' => $request->only(['name', 'phone']),
         ]);
     }
 

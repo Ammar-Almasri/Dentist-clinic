@@ -1,55 +1,43 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { Roles } from '@/Constants/Roles';
+import { debounce } from 'lodash-es'; // Or use a custom debounce util
 
 const props = defineProps({
-    patients: Array,
-    auth: Object, // Add auth prop to check user role
+    patients: Object,
+    filters: Object,
+    auth: Object,
 });
 
-const searchQuery = ref('');
-const selectedAgeGroup = ref('all');
+// Search inputs (synced with Laravel filters)
+const searchName = ref(props.filters.name || '');
+const searchPhone = ref(props.filters.phone || '');
+
+const isLoading = ref(false);
+
+const filterCache = ref({});
+
+watch([searchName, searchPhone], ([name, phone]) => {
+  router.get(
+    route('patients.index'),
+    { name: name || null, phone: phone || null },
+    { preserveState: true, replace: true }
+  );
+});
+
+
+// Reset filters
+const resetFilters = () => {
+    searchName.value = '';
+    searchPhone.value = '';
+};
 
 // Check if user is admin
 const isAdmin = computed(() => {
     return props.auth?.user?.role_id === Roles.ADMIN;
-});
-
-// Age groups for filtering
-const ageGroups = computed(() => {
-    return ['all', '0-18', '19-30', '31-50', '51+'];
-});
-
-// Filter patients
-const filteredPatients = computed(() => {
-    let results = props.patients;
-
-    // Filter by search query
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        results = results.filter(patient =>
-            patient.name.toLowerCase().includes(query) ||
-            (patient.phone && patient.phone.toLowerCase().includes(query))
-    )}
-
-    // Filter by age group
-    if (selectedAgeGroup.value !== 'all') {
-        const [minAge, maxAge] = selectedAgeGroup.value === '51+'
-            ? [51, 999]
-            : selectedAgeGroup.value.split('-').map(Number);
-
-        results = results.filter(patient => {
-            if (!patient.birth_date) return false;
-            const birthDate = new Date(patient.birth_date);
-            const age = new Date().getFullYear() - birthDate.getFullYear();
-            return age >= minAge && age <= maxAge;
-        });
-    }
-
-    return results;
 });
 </script>
 
@@ -84,12 +72,12 @@ const filteredPatients = computed(() => {
 
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <!-- Filters and Search -->
+                <!-- Filters Section -->
                 <div class="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-200">
                     <div class="flex flex-col md:flex-row gap-4 items-end">
-                        <!-- Search Input -->
+                        <!-- Name Search -->
                         <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -97,34 +85,42 @@ const filteredPatients = computed(() => {
                                     </svg>
                                 </div>
                                 <input
-                                    v-model="searchQuery"
+                                    v-model="searchName"
                                     type="text"
                                     class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                    placeholder="Search by name or phone number..."
+                                    placeholder="Search by name..."
                                 />
                             </div>
                         </div>
 
-                        <!-- Age Group Filter -->
-                        <div class="w-full md:w-64">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Age Group</label>
-                            <select
-                                v-model="selectedAgeGroup"
-                                class="block w-full px-4 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-white text-gray-900 transition duration-200"
-                            >
-                                <option v-for="group in ageGroups" :key="group" :value="group">
-                                    {{ group === 'all' ? 'All Ages' : (group === '51+' ? '51+' : group + ' years') }}
-                                </option>
-                            </select>
+                        <!-- Phone Search -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    v-model="searchPhone"
+                                    type="text"
+                                    class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                    placeholder="Search by phone number..."
+                                />
+                            </div>
                         </div>
 
+                        <div v-if="isLoading" class="mt-2 text-sm text-blue-600">
+                            Searching...
+                        </div>
                         <!-- Reset Button -->
                         <div class="w-full md:w-auto">
                             <button
-                                @click="searchQuery = ''; selectedAgeGroup = 'all'"
+                                @click="resetFilters"
                                 class="w-full md:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition duration-200 border border-gray-300"
-                                :class="{ 'opacity-50': !searchQuery && selectedAgeGroup === 'all' }"
-                                :disabled="!searchQuery && selectedAgeGroup === 'all'"
+                                :class="{ 'opacity-50': !searchName && !searchPhone }"
+                                :disabled="!searchName && !searchPhone"
                             >
                                 Reset
                             </button>
@@ -134,15 +130,15 @@ const filteredPatients = computed(() => {
                     <!-- Results Count -->
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <p class="text-sm text-gray-600">
-                            Showing {{ filteredPatients.length }} of {{ patients.length }} patients
+                            Showing {{ patients.data.length }} of {{ patients.total }} patients
                         </p>
                     </div>
                 </div>
 
                 <!-- Patients Grid -->
-                <div v-if="filteredPatients.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div v-if="patients.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <div
-                        v-for="patient in filteredPatients"
+                        v-for="patient in patients.data"
                         :key="patient.id"
                         class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-blue-200 group"
                     >
@@ -215,7 +211,7 @@ const filteredPatients = computed(() => {
 
                 <!-- Empty State -->
                 <div v-else class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
-                    <div class="max-w-md mx-auto">
+                    <div v-if="!isLoading && patients.data.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -226,7 +222,7 @@ const filteredPatients = computed(() => {
                             Try adjusting your search criteria or browse all available patients.
                         </p>
                         <button
-                            @click="searchQuery = ''; selectedAgeGroup = 'all'"
+                            @click="resetFilters"
                             class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -235,6 +231,25 @@ const filteredPatients = computed(() => {
                             Reset filters
                         </button>
                     </div>
+                </div>
+
+                <!-- Pagination -->
+                <div v-if="patients.links?.length > 3" class="mt-8 flex justify-center">
+                    <nav class="flex items-center gap-1">
+                        <template v-for="(link, index) in patients.links" :key="index">
+                            <Link
+                                :href="link.url || '#'"
+                                class="px-4 py-2 rounded-md border border-gray-300 text-sm font-medium"
+                                :class="{
+                                    'bg-blue-600 text-white border-blue-600': link.active,
+                                    'hover:bg-gray-100': !link.active && link.url,
+                                    'text-gray-400 cursor-not-allowed': !link.url,
+                                }"
+                                v-html="link.label"
+                                preserve-scroll
+                            />
+                        </template>
+                    </nav>
                 </div>
             </div>
         </div>

@@ -56,4 +56,14 @@ class Patient extends Model
         return $query;
     }
 
+    public function scopeFilterByName($query, $name)
+    {
+        return $name ? $query->where('name', 'like', "%$name%") : $query;
+    }
+
+    public function scopeFilterByPhone($query, $phone)
+    {
+        return $phone ? $query->where('phone', 'like', "%$phone%") : $query;
+    }
+
 }
