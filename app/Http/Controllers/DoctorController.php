@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DoctorController extends Controller
 {
@@ -16,9 +17,14 @@ class DoctorController extends Controller
         $this->authorizeResource(Doctor::class, 'doctor');
     }
 
+
     public function index()
     {
-        $doctors = Doctor::all()->map(function ($doctor) {
+        $perPage = 4;
+
+        $doctors = Doctor::paginate($perPage);
+
+        $doctors->getCollection()->transform(function ($doctor) {
             $photoPath = "photos/{$doctor->name}.jpg";
 
             $doctor->photo_url = file_exists(public_path($photoPath))
@@ -30,9 +36,10 @@ class DoctorController extends Controller
 
         return Inertia::render('Doctors/Index', [
             'doctors' => $doctors,
-            'auth' => ['user' => Auth::user()], // Add this line
+            'auth' => ['user' => Auth::user()],
         ]);
     }
+
 
     public function create()
     {

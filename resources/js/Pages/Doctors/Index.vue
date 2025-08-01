@@ -1,58 +1,76 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Roles } from '@/Constants/Roles';
 
 const props = defineProps({
-    doctors: Array,
-    auth: Object, // Add auth prop to check user role
+    doctors: Object, // Changed from Array to Object to handle pagination data
+    auth: Object,
 });
 
 const searchQuery = ref('');
-const selectedSpecialty = ref('all');
+const selectedspeciality = ref('all');
 
 // Check if user is admin
 const isAdmin = computed(() => {
     return props.auth?.user?.role_id === Roles.ADMIN;
 });
 
-// Extract unique specialties
+// Extract unique specialties from current page data
 const specialties = computed(() => {
     const unique = new Set();
-    props.doctors.forEach(doctor => {
-        if (doctor.specialty) {
-            unique.add(doctor.specialty);
+    props.doctors.data.forEach(doctor => {
+        if (doctor.speciality) {
+            unique.add(doctor.speciality);
         }
     });
     return ['all', ...Array.from(unique).sort()];
 });
 
-// Filter doctors (removed sorting functionality)
+// Filter doctors from current page
 const filteredDoctors = computed(() => {
-    let results = props.doctors;
+    let results = props.doctors.data;
 
     // Filter by search query
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
         results = results.filter(doctor =>
             doctor.name.toLowerCase().includes(query) ||
-            (doctor.specialty && doctor.specialty.toLowerCase().includes(query)) ||
-            (doctor.hospital && doctor.hospital.toLowerCase().includes(query))
+            (doctor.speciality && doctor.speciality.toLowerCase().includes(query))
         );
     }
 
-    // Filter by specialty
-    if (selectedSpecialty.value !== 'all') {
-        results = results.filter(doctor => doctor.specialty === selectedSpecialty.value);
+    // Filter by speciality
+    if (selectedspeciality.value !== 'all') {
+        results = results.filter(doctor => doctor.speciality === selectedspeciality.value);
     }
 
     return results;
 });
+
+// Reset filters and go to first page
+const resetFilters = () => {
+    searchQuery.value = '';
+    selectedspeciality.value = 'all';
+    if (props.doctors.current_page !== 1) {
+        router.get(route('doctors.index'));
+    }
+};
+
+// Handle pagination
+const goToPage = (url) => {
+    if (url) {
+        router.get(url, {}, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+};
 </script>
 
-<template >
+<template>
     <Head title="Doctors" />
 
     <AuthenticatedLayout>
@@ -99,20 +117,20 @@ const filteredDoctors = computed(() => {
                                     v-model="searchQuery"
                                     type="text"
                                     class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                    placeholder="Search by name, specialty, or hospital..."
+                                    placeholder="Search by name or speciality"
                                 />
                             </div>
                         </div>
 
-                        <!-- Specialty Filter -->
+                        <!-- speciality Filter -->
                         <div class="w-full md:w-64">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Specialty</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">speciality</label>
                             <select
-                                v-model="selectedSpecialty"
+                                v-model="selectedspeciality"
                                 class="block w-full px-4 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-white text-gray-900 transition duration-200"
                             >
-                                <option v-for="specialty in specialties" :key="specialty" :value="specialty">
-                                    {{ specialty === 'all' ? 'All Specialties' : specialty }}
+                                <option v-for="speciality in specialties" :key="speciality" :value="speciality">
+                                    {{ speciality === 'all' ? 'All Specialties' : speciality }}
                                 </option>
                             </select>
                         </div>
@@ -120,10 +138,10 @@ const filteredDoctors = computed(() => {
                         <!-- Reset Button -->
                         <div class="w-full md:w-auto">
                             <button
-                                @click="searchQuery = ''; selectedSpecialty = 'all'"
+                                @click="resetFilters"
                                 class="w-full md:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition duration-200 border border-gray-300"
-                                :class="{ 'opacity-50': !searchQuery && selectedSpecialty === 'all' }"
-                                :disabled="!searchQuery && selectedSpecialty === 'all'"
+                                :class="{ 'opacity-50': !searchQuery && selectedspeciality === 'all' }"
+                                :disabled="!searchQuery && selectedspeciality === 'all'"
                             >
                                 Reset
                             </button>
@@ -133,13 +151,14 @@ const filteredDoctors = computed(() => {
                     <!-- Results Count -->
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <p class="text-sm text-gray-600">
-                            Showing {{ filteredDoctors.length }} of {{ doctors.length }} doctors
+                            Showing {{ filteredDoctors.length }} of {{ doctors.data.length }} doctors on this page
+                            ({{ doctors.total }} total doctors)
                         </p>
                     </div>
                 </div>
 
                 <!-- Doctors Grid -->
-                <div v-if="filteredDoctors.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div v-if="filteredDoctors.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                     <div
                         v-for="doctor in filteredDoctors"
                         :key="doctor.id"
@@ -172,20 +191,6 @@ const filteredDoctors = computed(() => {
                             <div class="text-center">
                                 <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors">{{ doctor.name }}</h3>
                                 <p class="text-blue-600 font-medium text-sm mb-3">{{ doctor.speciality || 'General Practitioner' }}</p>
-
-                                <div class="flex items-center justify-center text-xs text-gray-600 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                    {{ doctor.years_experience || 0 }} years experience
-                                </div>
-
-                                <div v-if="doctor.hospital" class="flex items-center justify-center text-xs text-gray-500 mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
-                                    {{ doctor.hospital }}
-                                </div>
                             </div>
 
                             <!-- Action Buttons -->
@@ -218,8 +223,63 @@ const filteredDoctors = computed(() => {
                     </div>
                 </div>
 
+                <!-- Pagination Controls -->
+                <div v-if="doctors.last_page > 1" class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <!-- Pagination Info -->
+                        <div class="text-sm text-gray-700">
+                            Showing {{ doctors.from }} to {{ doctors.to }} of {{ doctors.total }} results
+                        </div>
+
+                        <!-- Pagination Links -->
+                        <div class="flex items-center space-x-2">
+                            <!-- Previous Button -->
+                            <button
+                                @click="goToPage(doctors.prev_page_url)"
+                                :disabled="!doctors.prev_page_url"
+                                class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Previous
+                            </button>
+
+                            <!-- Page Numbers -->
+                            <div class="hidden sm:flex space-x-1">
+                                <template v-for="(link, index) in doctors.links" :key="index">
+                                    <button
+                                        v-if="link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;'"
+                                        @click="goToPage(link.url)"
+                                        :disabled="!link.url"
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md transition-colors"
+                                        :class="{
+                                            'bg-blue-600 border-blue-600 text-white': link.active,
+                                            'text-gray-500 bg-white border-gray-300 hover:bg-gray-50': !link.active && link.url,
+                                            'text-gray-300 bg-gray-100 border-gray-300 cursor-not-allowed': !link.url
+                                        }"
+                                        v-html="link.label"
+                                    ></button>
+                                </template>
+                            </div>
+
+                            <!-- Next Button -->
+                            <button
+                                @click="goToPage(doctors.next_page_url)"
+                                :disabled="!doctors.next_page_url"
+                                class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Next
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Empty State -->
-                <div v-else class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
+                <div v-else-if="doctors.data.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
                     <div class="max-w-md mx-auto">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -231,7 +291,7 @@ const filteredDoctors = computed(() => {
                             Try adjusting your search criteria or browse all available doctors.
                         </p>
                         <button
-                            @click="searchQuery = ''; selectedSpecialty = 'all'"
+                            @click="resetFilters"
                             class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
