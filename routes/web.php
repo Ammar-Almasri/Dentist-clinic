@@ -26,10 +26,24 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('doctors', DoctorController::class);
-    Route::resource('patients', PatientController::class);
-    Route::resource('appointments', AppointmentController::class);
+    // Doctors
+    Route::post('/doctors', [DoctorController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('doctors.store');
+    Route::resource('doctors', DoctorController::class)->except(['store']);
+
+    // Patients
+    Route::post('/patients', [PatientController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('patients.store');
+    Route::resource('patients', PatientController::class)->except(['store']);
+
+    // Appointments
+    Route::post('/appointments', [AppointmentController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('appointments.store');
+    Route::resource('appointments', AppointmentController::class)->except(['store']);
+
 });
 
 Route::resource('services', ServiceController::class);
-Route::get('/test-speed', fn() => 'Fast response');
