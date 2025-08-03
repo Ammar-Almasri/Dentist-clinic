@@ -14,6 +14,7 @@ class RolesTableSeeder extends Seeder
             ['id' => Roles::ADMIN, 'name' => 'Admin'],
             ['id' => Roles::DOCTOR, 'name' => 'Doctor'],
             ['id' => Roles::PATIENT, 'name' => 'Patient'],
+            ['id' => Roles::SUPER_ADMIN, 'name' => 'Super Admin'], // Added super-admin role
         ]);
     }
 }

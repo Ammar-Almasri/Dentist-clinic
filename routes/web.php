@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -43,6 +44,8 @@ Route::middleware([
         ->middleware('throttle:5,1')
         ->name('appointments.store');
     Route::resource('appointments', AppointmentController::class)->except(['store']);
+
+    Route::resource('users', UserController::class);
 
 });
 

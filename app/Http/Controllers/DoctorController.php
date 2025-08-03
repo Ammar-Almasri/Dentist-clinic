@@ -47,8 +47,6 @@ class DoctorController extends Controller
         ]);
     }
 
-
-
     public function create()
     {
         return Inertia::render('Doctors/Create');
