@@ -48,5 +48,8 @@ Route::middleware([
     Route::resource('users', UserController::class);
 
 });
+Route::get('/test', function() {
+    return 'App is running!';
+});
 
 Route::resource('services', ServiceController::class);
