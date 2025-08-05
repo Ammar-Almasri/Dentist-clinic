@@ -1,18 +1,6 @@
 version: "3.9"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dentist-app
-    ports:
-      - 9000:9000
-    volumes:
-      - .:/app
-    depends_on:
-      - dentist-mysql
-
   dentist-mysql:
     image: mariadb:10.8.3
     container_name: dentist-mysql
