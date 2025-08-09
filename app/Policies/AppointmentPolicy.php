@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Constants\Roles;
+use App\constants\Roles;
 use App\Models\Appointment;
 use App\Models\User;
 

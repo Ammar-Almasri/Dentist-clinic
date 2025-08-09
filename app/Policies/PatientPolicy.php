@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\Patient;
 use App\Models\User;
-use App\Constants\Roles; // make sure this is the correct path
+use App\constants\Roles; // make sure this is the correct path
 
 class PatientPolicy
 {
