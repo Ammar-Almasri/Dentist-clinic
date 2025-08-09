@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Constants\Roles;
+use App\constants\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 

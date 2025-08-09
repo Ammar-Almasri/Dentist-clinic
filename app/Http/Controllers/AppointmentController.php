@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Roles;
-use App\Constants\Status;
+use App\constants\Roles;
+use App\constants\Status;
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Patient;

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Constants\Roles;
+use App\constants\Roles;
 use Illuminate\Database\Eloquent\Model;
 
 /**

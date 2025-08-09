@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Constants\Status;
+use App\constants\Status;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AppointmentRequest extends FormRequest

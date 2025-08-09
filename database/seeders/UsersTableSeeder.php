@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use App\Constants\Roles;
+use App\constants\Roles;
 
 class UsersTableSeeder extends Seeder
 {
