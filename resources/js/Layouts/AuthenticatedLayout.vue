@@ -6,7 +6,6 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { ref } from 'vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 
 const showingNavigationDropdown = ref(false);
 
