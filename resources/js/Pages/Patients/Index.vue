@@ -2,49 +2,70 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref, watch, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Roles } from '@/Constants/Roles';
-import { debounce } from 'lodash-es'; // Or use a custom debounce util
 
 const props = defineProps({
     patients: Object,
-    filters: Object,
     auth: Object,
+    filters: Object,
 });
 
-// Search inputs (synced with Laravel filters)
+// Search inputs
 const searchName = ref(props.filters.name || '');
 const searchPhone = ref(props.filters.phone || '');
-
-const isLoading = ref(false);
-
-const filterCache = ref({});
-
-watch([searchName, searchPhone], ([name, phone]) => {
-  router.get(
-    route('patients.index'),
-    { name: name || null, phone: phone || null },
-    { preserveState: true, replace: true }
-  );
-});
-
-
-// Reset filters
-const resetFilters = () => {
-    searchName.value = '';
-    searchPhone.value = '';
-};
 
 // Check if user is admin
 const isAdmin = computed(() => {
     return props.auth?.user?.role_id === Roles.ADMIN;
 });
+
+// Watch for filter changes and update the backend request
+watch([searchName, searchPhone], ([name, phone]) => {
+    router.get(route('patients.index'), {
+        name: name || null,
+        phone: phone || null,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
+}, { deep: true });
+
+// Reset filters
+const resetFilters = () => {
+    searchName.value = '';
+    searchPhone.value = '';
+    router.get(route('patients.index'), {}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
+
+// Handle pagination
+const goToPage = (url) => {
+    if (url) {
+        // Extract relative path and query from full URL
+        const parsedUrl = new URL(url, window.location.origin);
+        const relativePathWithQuery = parsedUrl.pathname + parsedUrl.search;
+
+        router.get(relativePathWithQuery, {
+            name: searchName.value || null,
+            phone: searchPhone.value || null,
+        }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+};
+
 </script>
 
 <template>
     <Head title="Patients" />
 
     <AuthenticatedLayout>
+        <!-- Header Section (unchanged) -->
         <template #header>
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
@@ -72,7 +93,7 @@ const isAdmin = computed(() => {
 
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <!-- Filters Section -->
+                <!-- Filters Section (unchanged) -->
                 <div class="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-200">
                     <div class="flex flex-col md:flex-row gap-4 items-end">
                         <!-- Name Search -->
@@ -111,9 +132,6 @@ const isAdmin = computed(() => {
                             </div>
                         </div>
 
-                        <div v-if="isLoading" class="mt-2 text-sm text-blue-600">
-                            Searching...
-                        </div>
                         <!-- Reset Button -->
                         <div class="w-full md:w-auto">
                             <button
@@ -130,13 +148,14 @@ const isAdmin = computed(() => {
                     <!-- Results Count -->
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <p class="text-sm text-gray-600">
-                            Showing {{ patients.data.length }} of {{ patients.total }} patients
+                            Showing {{ patients.from }} to {{ patients.to }} of {{ patients.total }} patients
                         </p>
                     </div>
                 </div>
 
-                <!-- Patients Grid -->
+                <!-- Patients Grid (unchanged) -->
                 <div v-if="patients.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Patient cards remain exactly the same -->
                     <div
                         v-for="patient in patients.data"
                         :key="patient.id"
@@ -209,9 +228,9 @@ const isAdmin = computed(() => {
                     </div>
                 </div>
 
-                <!-- Empty State -->
+                <!-- Empty State (unchanged) -->
                 <div v-else class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
-                    <div v-if="!isLoading && patients.data.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
+                    <div class="max-w-md mx-auto">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -233,23 +252,59 @@ const isAdmin = computed(() => {
                     </div>
                 </div>
 
-                <!-- Pagination -->
-                <div v-if="patients.links?.length > 3" class="mt-8 flex justify-center">
-                    <nav class="flex items-center gap-1">
-                        <template v-for="(link, index) in patients.links" :key="index">
-                            <Link
-                                :href="link.url || '#'"
-                                class="px-4 py-2 rounded-md border border-gray-300 text-sm font-medium"
-                                :class="{
-                                    'bg-blue-600 text-white border-blue-600': link.active,
-                                    'hover:bg-gray-100': !link.active && link.url,
-                                    'text-gray-400 cursor-not-allowed': !link.url,
-                                }"
-                                v-html="link.label"
-                                preserve-scroll
-                            />
-                        </template>
-                    </nav>
+                <!-- Pagination Controls (updated to match Doctors) -->
+                <div v-if="patients.last_page > 1" class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <!-- Pagination Info -->
+                        <div class="text-sm text-gray-700">
+                            Showing {{ patients.from }} to {{ patients.to }} of {{ patients.total }} results
+                        </div>
+
+                        <!-- Pagination Links -->
+                        <div class="flex items-center space-x-2">
+                            <!-- Previous Button -->
+                            <button
+                                @click="goToPage(patients.prev_page_url)"
+                                :disabled="!patients.prev_page_url"
+                                class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Previous
+                            </button>
+
+                            <!-- Page Numbers -->
+                            <div class="hidden sm:flex space-x-1">
+                                <template v-for="(link, index) in patients.links" :key="index">
+                                    <button
+                                        v-if="link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;'"
+                                        @click="goToPage(link.url)"
+                                        :disabled="!link.url"
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md transition-colors"
+                                        :class="{
+                                            'bg-blue-600 border-blue-600 text-white': link.active,
+                                            'text-gray-500 bg-white border-gray-300 hover:bg-gray-50': !link.active && link.url,
+                                            'text-gray-300 bg-gray-100 border-gray-300 cursor-not-allowed': !link.url
+                                        }"
+                                        v-html="link.label"
+                                    ></button>
+                                </template>
+                            </div>
+
+                            <!-- Next Button -->
+                            <button
+                                @click="goToPage(patients.next_page_url)"
+                                :disabled="!patients.next_page_url"
+                                class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Next
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

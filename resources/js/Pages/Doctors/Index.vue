@@ -55,15 +55,16 @@ const resetFilters = () => {
 // Handle pagination
 const goToPage = (url) => {
     if (url) {
-        router.get(url, {
+        const relativeUrl = new URL(url).pathname + new URL(url).search;
+        router.get(relativeUrl, {
             name: searchQuery.value,
-            speciality: selectedspeciality.value === 'all' ? null : selectedspeciality.value,
         }, {
             preserveState: true,
             preserveScroll: true,
         });
     }
 };
+
 </script>
 
 <template>
@@ -114,7 +115,7 @@ const goToPage = (url) => {
                                     v-model="searchQuery"
                                     type="text"
                                     class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                    placeholder="Search by name or speciality"
+                                    placeholder="Search by name"
                                 />
                             </div>
                         </div>
