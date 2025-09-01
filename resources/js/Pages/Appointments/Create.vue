@@ -5,13 +5,11 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-import { CalendarIcon, UserIcon, BuildingOffice2Icon, CogIcon } from '@heroicons/vue/24/outline';
+import { CalendarIcon, UserIcon, BuildingOffice2Icon, CogIcon, ClockIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     patients: Array,
     doctors: Array,
-    services: Array,
 });
 
 const form = useForm({
@@ -31,6 +29,7 @@ const submit = () => {
     })).post(route('appointments.store'));
 };
 </script>
+
 
 <template>
     <AuthenticatedLayout>
@@ -117,12 +116,13 @@ const submit = () => {
                                     <select
                                         id="service_id"
                                         v-model="form.service_id"
+                                        :disabled="!form.doctor_id"
                                         class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         :class="{ 'border-red-300': form.errors.service_id }"
                                     >
                                         <option :value="null">No specific service</option>
                                         <option
-                                            v-for="service in services"
+                                            v-for="service in (doctors.find(d => d.id === Number(form.doctor_id))?.services || [])"
                                             :key="service.id"
                                             :value="service.id"
                                         >
@@ -132,6 +132,7 @@ const submit = () => {
                                 </div>
                                 <InputError class="mt-2" :message="form.errors.service_id" />
                             </div>
+
 
                             <!-- Date and Time Selection -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,8 +155,8 @@ const submit = () => {
                                 </div>
 
                                 <div>
-                                    <InputLabel for="appointment_time" value="Appointment Time" />
-                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                <InputLabel for="appointment_time" value="Appointment Time" />
+                                <div class="mt-1 relative rounded-md shadow-sm">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <ClockIcon class="h-5 w-5 text-gray-400" />
                                         </div>
@@ -163,13 +164,15 @@ const submit = () => {
                                             type="time"
                                             id="appointment_time"
                                             v-model="form.appointment_time"
+                                            min="08:00"
+                                            max="16:00"
                                             class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             :class="{ 'border-red-300': form.errors.appointment_date }"
                                         />
                                     </div>
+                                    <p class="mt-1 text-sm text-gray-500">Available between 8:00 AM and 4:00 PM</p>
                                 </div>
                             </div>
-
                             <div class="flex items-center justify-end mt-8">
                                 <Link
                                     :href="route('appointments.index')"

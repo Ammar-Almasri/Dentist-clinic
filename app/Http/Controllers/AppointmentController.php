@@ -52,13 +52,11 @@ class AppointmentController extends Controller
     public function create()
     {
         $patients = Patient::forCurrentUser()->get();
-        $doctors = Doctor::all();
-        $services = Service::all();
+        $doctors = Doctor::with('services')->get(); // eager load services
 
         return Inertia::render('Appointments/Create', [
             'patients' => $patients,
             'doctors' => $doctors,
-            'services' => $services,
         ]);
     }
 
