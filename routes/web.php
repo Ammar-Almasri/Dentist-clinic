@@ -53,3 +53,6 @@ Route::get('/test', function() {
 });
 
 Route::resource('services', ServiceController::class);
+Route::get('/mail-config', function() {
+    dd(config('mail'));
+});
