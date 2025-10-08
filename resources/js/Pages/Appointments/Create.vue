@@ -17,7 +17,7 @@ const form = useForm({
     doctor_id: '',
     service_id: null,
     appointment_date: '',
-    appointment_time: '',
+    appointment_time: '08:00',
 });
 
 const submit = () => {
@@ -155,7 +155,7 @@ const submit = () => {
                                 </div>
 
                                 <div>
-                                <InputLabel for="appointment_time" value="Appointment Time" />
+                                <InputLabel for="appointment_time" value="Preferred Appointment Time" />
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <ClockIcon class="h-5 w-5 text-gray-400" />
@@ -168,7 +168,9 @@ const submit = () => {
                                             max="16:00"
                                             class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             :class="{ 'border-red-300': form.errors.appointment_date }"
+                                            value="08:00"
                                         />
+
                                     </div>
                                     <p class="mt-1 text-sm text-gray-500">Available between 8:00 AM and 4:00 PM</p>
                                     <InputError class="mt-2" :message="form.errors.appointment_date" />
