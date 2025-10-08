@@ -12,22 +12,13 @@ class AppointmentRequest extends FormRequest
         return true; // change if you need auth later
     }
 
-    protected function prepareForValidation(): void
-    {
-        if ($this->has(['appointment_date', 'appointment_time'])) {
-            $this->merge([
-                'appointment_date' => $this->appointment_date . ' ' . $this->appointment_time,
-            ]);
-        }
-    }
-
     public function rules(): array
     {
         return [
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
             'service_id' => 'nullable|exists:services,id',
-            'appointment_date' => 'required|date_format:Y-m-d H:i|after_or_equal:now',
+            'appointment_date' => 'required|date|after_or_equal:now',
             'status' => 'nullable|in:' . implode(',', [Status::PENDING, Status::CONFIRMED]),
         ];
     }
