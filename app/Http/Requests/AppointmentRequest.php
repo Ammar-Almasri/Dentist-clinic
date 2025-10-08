@@ -12,6 +12,15 @@ class AppointmentRequest extends FormRequest
         return true; // change if you need auth later
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has(['appointment_date', 'appointment_time'])) {
+            $this->merge([
+                'appointment_date' => $this->appointment_date . ' ' . $this->appointment_time,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
