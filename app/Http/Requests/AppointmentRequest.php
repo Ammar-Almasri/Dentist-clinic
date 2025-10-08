@@ -18,7 +18,7 @@ class AppointmentRequest extends FormRequest
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
             'service_id' => 'nullable|exists:services,id',
-            'appointment_date' => 'required|date|after_or_equal:today',
+            'appointment_date' => 'required|date_format:Y-m-d H:i:s|after_or_equal:now',
             'status' => 'nullable|in:' . implode(',', [Status::PENDING, Status::CONFIRMED]),
         ];
     }

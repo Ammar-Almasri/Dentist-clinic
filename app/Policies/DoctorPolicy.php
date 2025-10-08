@@ -20,26 +20,26 @@ class DoctorPolicy
 
     public function create(User $user): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function update(User $user, Doctor $doctor): bool
     {
-        return $user->role_id === Roles::ADMIN || $user->id === $doctor->user_id;
+        return $user->role_id === Roles::ADMIN || $user->id === $doctor->user_id || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function delete(User $user, Doctor $doctor): bool
     {
-        return $user->role_id === Roles::ADMIN || $user->id === $doctor->user_id;
+        return $user->role_id === Roles::ADMIN || $user->id === $doctor->user_id || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function restore(User $user, Doctor $doctor): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function forceDelete(User $user, Doctor $doctor): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN;
     }
 }

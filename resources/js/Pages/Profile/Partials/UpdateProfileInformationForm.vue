@@ -17,6 +17,7 @@ const form = useForm({
     _method: 'PUT',
     name: props.user.name,
     email: props.user.email,
+    phone: props.user.phone, // Add phone field
     photo: null,
 });
 
@@ -174,6 +175,19 @@ const clearPhotoFileInput = () => {
                         A new verification link has been sent to your email address.
                     </div>
                 </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="phone" value="Phone Number" />
+                <TextInput
+                    id="phone"
+                    v-model="form.phone"
+                    type="tel"
+                    class="mt-1 block w-full"
+                    autocomplete="tel"
+                />
+                <InputError :message="form.errors.phone" class="mt-2" />
             </div>
         </template>
 

@@ -14,7 +14,7 @@ class AppointmentPolicy
     public function viewAny(User $user): bool
     {
         // Admin and patient can view appointments (you can adjust)
-        return in_array($user->role_id, [Roles::ADMIN, Roles::PATIENT]);
+        return in_array($user->role_id, [Roles::ADMIN, Roles::PATIENT, Roles::SUPER_ADMIN]);
     }
 
     /**
@@ -22,7 +22,7 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment): bool
     {
-        if ($user->role_id === Roles::ADMIN) {
+        if ($user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN) {
             return true; // Admin can view all
         }
 
@@ -40,7 +40,7 @@ class AppointmentPolicy
     public function create(User $user): bool
     {
         // Admin and patient can create
-        return in_array($user->role_id, [Roles::ADMIN, Roles::PATIENT]);
+        return in_array($user->role_id, [Roles::ADMIN, Roles::PATIENT, Roles::SUPER_ADMIN]);
     }
 
     /**
@@ -48,7 +48,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        if ($user->role_id === Roles::ADMIN) {
+        if ($user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN) {
             return true;
         }
 
@@ -64,7 +64,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        if ($user->role_id === Roles::ADMIN) {
+        if ($user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN) {
             return true;
         }
 

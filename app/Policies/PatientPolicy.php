@@ -15,7 +15,7 @@ class PatientPolicy
 
     public function view(User $user, Patient $patient): bool
     {
-        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id;
+        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function create(User $user): bool
@@ -25,21 +25,21 @@ class PatientPolicy
 
     public function update(User $user, Patient $patient): bool
     {
-        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id;
+        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function delete(User $user, Patient $patient): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->id === $patient->user_id || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function restore(User $user, Patient $patient): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN;
     }
 
     public function forceDelete(User $user, Patient $patient): bool
     {
-        return $user->role_id === Roles::ADMIN;
+        return $user->role_id === Roles::ADMIN || $user->role_id === Roles::SUPER_ADMIN;
     }
 }

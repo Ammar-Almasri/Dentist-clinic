@@ -171,6 +171,7 @@ const submit = () => {
                                         />
                                     </div>
                                     <p class="mt-1 text-sm text-gray-500">Available between 8:00 AM and 4:00 PM</p>
+                                    <InputError class="mt-2" :message="form.errors.appointment_date" />
                                 </div>
                             </div>
                             <div class="flex items-center justify-end mt-8">

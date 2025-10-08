@@ -66,15 +66,14 @@ defineProps({
               </div>
             </div>
 
-            <!-- View button with hover effect -->
             <Link
-              :href="route('services.show', service.id)"
-              class="mt-auto w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2"
+            :href="route('services.show', service.id)"
+            class="mt-auto w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-teal-400 text-white font-medium rounded-lg transition-all duration-300 transform flex items-center justify-center space-x-2 pointer-events-none opacity-60"
             >
-              <span>View Service</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <span>View Service</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
+            </svg>
             </Link>
           </div>
         </div>

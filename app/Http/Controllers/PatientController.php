@@ -25,7 +25,7 @@ class PatientController extends Controller
             ->filterByName($request->name)
             ->filterByPhone($request->phone);
 
-        if ($user->role_id !== Roles::ADMIN) {
+        if ($user->role_id !== Roles::ADMIN && $user->role_id !== Roles::SUPER_ADMIN) {
             $query->where('user_id', $user->id);
         }
 
