@@ -78,6 +78,12 @@ class User extends Authenticatable implements MustVerifyEmail // ⬅️ add this
         'role_id',
     ];
 
+    // Add this inside your User class, anywhere after the existing methods
+    public function hasVerifiedEmail()
+    {
+        return true;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
