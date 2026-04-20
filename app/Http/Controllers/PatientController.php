@@ -46,7 +46,7 @@ class PatientController extends Controller
     {
         $data = $request->validated();
 
-        if (Auth::user()->role_id === Roles::ADMIN) {
+        if (Auth::user()->role_id === Roles::ADMIN || Auth::user()->role_id === Roles::SUPER_ADMIN) {
             // Admin: check if there's a user with same phone and assign user_id
             $user = User::where('phone', $data['phone'])->first();
             if ($user) {

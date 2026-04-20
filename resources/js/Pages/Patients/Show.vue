@@ -11,7 +11,7 @@ const props = defineProps({
 
 // Check if user is admin
 const isAdmin = computed(() => {
-    return props.auth?.user?.role_id === Roles.ADMIN;
+    return props.auth?.user?.role_id === Roles.ADMIN || props.auth?.user?.role_id === Roles.SUPER_ADMIN;
 });
 
 // Calculate age from birth date

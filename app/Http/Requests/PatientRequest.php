@@ -15,7 +15,7 @@ class PatientRequest extends FormRequest
 
     public function rules()
     {
-        if (Auth::user()->role_id === Roles::ADMIN) {
+        if (Auth::user()->role_id === Roles::ADMIN || Auth::user()->role_id === Roles::SUPER_ADMIN) {
             return [
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',

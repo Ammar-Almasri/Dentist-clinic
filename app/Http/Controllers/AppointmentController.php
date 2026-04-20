@@ -26,7 +26,7 @@ class AppointmentController extends Controller
             ->filterByDate($request->date_from, $request->date_to)
             ->filterByDoctor($request->doctor_id);
 
-        if (auth()->user()->role_id !== Roles::ADMIN) {
+        if (auth()->user()->role_id !== Roles::ADMIN && auth()->user()->role_id !== Roles::SUPER_ADMIN) {
             // For non-admin users: filter appointments by patients under the user
             $query->whereHas('patient', function ($q) {
                 $q->where('user_id', auth()->id());

@@ -123,7 +123,7 @@ class User extends Authenticatable implements MustVerifyEmail // ⬅️ add this
         return $this->hasOne(Doctor::class);
     }
 
-    public function patient()
+    public function patients()
     {
         return $this->hasMany(Patient::class);
     }

@@ -11,12 +11,17 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $users = User::query()
+            ->when($request->name, fn($q) => $q->where('name', 'like', "%{$request->name}%"))
+            ->when($request->email, fn($q) => $q->where('email', 'like', "%{$request->email}%"))
+            ->paginate(12)
+            ->withQueryString();
 
         return Inertia::render('Users/Index', [
-            'users' => $users,
+            'users'   => $users,
+            'filters' => $request->only('name', 'email'),
         ]);
     }
 
@@ -39,9 +44,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        return Inertia::render('Users/Show', [
+            'user' => $user->load('patients'),
+        ]);
     }
 
     /**
@@ -55,16 +62,24 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validated = $request->validate([
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $user->update($validated);
+
+        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect()->route('users.index');
     }
 }
