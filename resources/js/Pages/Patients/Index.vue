@@ -17,7 +17,7 @@ const searchPhone = ref(props.filters.phone || '');
 
 // Check if user is admin
 const isAdmin = computed(() => {
-    return props.auth?.user?.role_id === Roles.ADMIN;
+    return props.auth?.user?.role_id === Roles.ADMIN || props.auth?.user?.role_id === Roles.SUPER_ADMIN;
 });
 
 // Watch for filter changes and update the backend request

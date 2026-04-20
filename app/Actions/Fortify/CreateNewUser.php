@@ -37,12 +37,11 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         // Check for existing patient with the same phone number
-        $patient = \App\Models\Patient::where('phone', $input['phone'])->first();
-
-        if ($patient && !$patient->user_id) {
-            $patient->user_id = $user->id;
-            $patient->save();
-        }
+        \App\Models\Patient::where('phone', $input['phone'])
+        ->whereNull('user_id')
+        ->update([
+            'user_id' => $user->id
+        ]);
 
         return $user;
 

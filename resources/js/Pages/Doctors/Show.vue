@@ -12,7 +12,7 @@ const props = defineProps({
 
 // Check if user is admin
 const isAdmin = computed(() => {
-    return props.auth?.user?.role_id === Roles.ADMIN;
+    return props.auth?.user?.role_id === Roles.ADMIN || props.auth?.user?.role_id === Roles.SUPER_ADMIN;
 });
 
 </script>
@@ -122,7 +122,7 @@ const isAdmin = computed(() => {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="px-6 py-8 border-t border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

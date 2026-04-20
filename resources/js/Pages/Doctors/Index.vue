@@ -16,7 +16,7 @@ const selectedspeciality = ref(props.filters.speciality || 'all');
 
 // Check if user is admin
 const isAdmin = computed(() => {
-    return props.auth?.user?.role_id === Roles.ADMIN;
+    return props.auth?.user?.role_id === Roles.ADMIN || props.auth?.user?.role_id === Roles.SUPER_ADMIN;
 });
 
 // Extract unique specialties from current page data
