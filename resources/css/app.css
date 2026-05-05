@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+html[dir="rtl"] body {
+    direction: rtl;
+}
+
+html[dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]),
+html[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]),
+html[dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
+
+html[dir="rtl"] .ml-2,
+html[dir="rtl"] .ml-3,
+html[dir="rtl"] .ml-6,
+html[dir="rtl"] .ml-10 {
+    margin-left: 0;
+}
+
+html[dir="rtl"] .mr-2,
+html[dir="rtl"] .mr-3 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+html[dir="rtl"] .text-left {
+    text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+    text-align: left;
+}
+
 [x-cloak] {
     display: none;
 }
